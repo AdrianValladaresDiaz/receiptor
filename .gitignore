@@ -1,0 +1,6 @@
+/static
+*/__pycache__
+/env
+/venv
+*.log
+.pytest_cache/
