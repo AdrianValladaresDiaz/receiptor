@@ -1,37 +1,10 @@
 from PIL import Image
 import pytesseract
 import receipt_processor.file_gatherer as RP
-from receipt_processor.overseer import Overseer
-from receipt_processor.ocr_worker import OCRWorker
 from multiprocessing import Queue, Event
 import logging
 from receipt_processor.setup_loggers import setup_loggers
-
-
-def ocr_test():
-
-    with Image.open("./static/receipt1.jpg") as img:
-        # , config='--psm 6', tessdata_dir='path/to/model/files')
-        text = pytesseract.image_to_string(img, lang='eng')
-
-        print(img.info)
-        print(text)
-
-
-def test():
-    print("starting test")
-    images = RP.gather_files("./static")
-    result = Queue()
-    ev = Event()
-    worker = OCRWorker(inQ=images, outQ=result, target="./static", event=ev)
-    worker.work()
-    while not result.empty():
-        print(result.get())
-
-
-def q_printer(q: Queue, logger: logging.Logger):
-    while not q.empty():
-        logger.debug(q.get())
+import server.Server as OCRServer
 
 
 def random_generator(outQ: Queue, logger: logging.Logger):
@@ -58,7 +31,6 @@ def random_generator(outQ: Queue, logger: logging.Logger):
 def image_generator(outQ: Queue, logger: logging.Logger):
     """Not actually a generator"""
     import time
-    import copy
     images1 = RP.gather_files("./static")
     images2 = RP.gather_files("./static")
 
@@ -67,9 +39,9 @@ def image_generator(outQ: Queue, logger: logging.Logger):
         try:
             imgpath = images1.get()
             with Image.open(imgpath) as img:
-                img2 = img.copy()
+                img2 = img.copy() # Copying the image because  otherwise
                 logger.debug(f'pushing {img2}')
-                outQ.put(img2)
+                outQ.put(img)
         except Exception as e:
             logger.debug(str(Exception.with_traceback(e)))
             break
@@ -91,7 +63,7 @@ def image_generator(outQ: Queue, logger: logging.Logger):
     logger.debug("GENERATOR DONE")
 
 
-def gpt_test():
+def OCR_TEST():
     import multiprocessing
     from receipt_processor import ocr_processing
     import time
@@ -132,6 +104,8 @@ def gpt_test():
     generator_process.join()
     listener.stop()
 
+def SERVER_TEST():
+    server = OCRServer.Server().start()
 
 """Trace - Only when I would be "tracing" the code and trying to find one part of a function specifically.
 Debug - Information that is diagnostically helpful to people more than just developers (IT, sysadmins, etc.).
@@ -141,4 +115,5 @@ Error - Any error which is fatal to the operation, but not the service or applic
 Fatal - Any error that is forcing a shutdown of the service or application to prevent data loss (or further data loss). I reserve these only for the most heinous errors and situations where there is guaranteed to have been data corruption or loss.
 """
 if __name__ == "__main__":
-    gpt_test()
+    # OCR_TEST()
+    SERVER_TEST()

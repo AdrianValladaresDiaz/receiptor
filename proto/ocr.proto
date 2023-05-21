@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message PingResponse {
+    string message = 1;
+  }
+  
+message PingRequest{}
+
+service OCR {
+    rpc Ping(PingRequest) returns (PingResponse);
+}
