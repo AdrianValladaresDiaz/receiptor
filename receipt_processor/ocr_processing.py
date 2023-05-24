@@ -1,5 +1,4 @@
 from multiprocessing import Queue, Value
-from PIL import Image
 import pytesseract
 from logging import Logger
 

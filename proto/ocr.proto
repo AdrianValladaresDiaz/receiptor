@@ -6,6 +6,15 @@ message PingResponse {
   
 message PingRequest{}
 
+message UploadImageRequest{
+  bytes chunk = 1;
+}
+
+message UploadImageResponse{
+  string message = 1;
+}
+
 service OCR {
     rpc Ping(PingRequest) returns (PingResponse);
+    rpc UploadImage(stream UploadImageRequest) returns (UploadImageResponse);
 }

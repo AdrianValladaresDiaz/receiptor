@@ -70,6 +70,8 @@ def OCR_TEST():
 
     # Setup
     [logger, listener] = setup_loggers()
+    [serverLogger, serverLoggerListener] = setup_loggers()
+    
     listener.start()
     try:
         inQ = Queue(-1)

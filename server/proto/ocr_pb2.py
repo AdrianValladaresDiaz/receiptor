@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tocr.proto\"\x1f\n\x0cPingResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\r\n\x0bPingRequest2*\n\x03OCR\x12#\n\x04Ping\x12\x0c.PingRequest\x1a\r.PingResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tocr.proto\"\x1f\n\x0cPingResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"#\n\x12UploadImageRequest\x12\r\n\x05\x63hunk\x18\x01 \x01(\x0c\"&\n\x13UploadImageResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2f\n\x03OCR\x12#\n\x04Ping\x12\x0c.PingRequest\x1a\r.PingResponse\x12:\n\x0bUploadImage\x12\x13.UploadImageRequest\x1a\x14.UploadImageResponse(\x01\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'ocr_pb2', globals())
@@ -24,6 +24,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PINGRESPONSE._serialized_end=44
   _PINGREQUEST._serialized_start=46
   _PINGREQUEST._serialized_end=59
-  _OCR._serialized_start=61
-  _OCR._serialized_end=103
+  _UPLOADIMAGEREQUEST._serialized_start=61
+  _UPLOADIMAGEREQUEST._serialized_end=96
+  _UPLOADIMAGERESPONSE._serialized_start=98
+  _UPLOADIMAGERESPONSE._serialized_end=136
+  _OCR._serialized_start=138
+  _OCR._serialized_end=240
 # @@protoc_insertion_point(module_scope)
