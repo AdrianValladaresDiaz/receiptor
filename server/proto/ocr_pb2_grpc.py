@@ -15,12 +15,12 @@ class OCRStub(object):
             channel: A grpc.Channel.
         """
         self.Ping = channel.unary_unary(
-                '/OCR/Ping',
+                '/ocr.OCR/Ping',
                 request_serializer=ocr__pb2.PingRequest.SerializeToString,
                 response_deserializer=ocr__pb2.PingResponse.FromString,
                 )
         self.UploadImage = channel.stream_unary(
-                '/OCR/UploadImage',
+                '/ocr.OCR/UploadImage',
                 request_serializer=ocr__pb2.UploadImageRequest.SerializeToString,
                 response_deserializer=ocr__pb2.UploadImageResponse.FromString,
                 )
@@ -56,7 +56,7 @@ def add_OCRServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'OCR', rpc_method_handlers)
+            'ocr.OCR', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -75,7 +75,7 @@ class OCR(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/OCR/Ping',
+        return grpc.experimental.unary_unary(request, target, '/ocr.OCR/Ping',
             ocr__pb2.PingRequest.SerializeToString,
             ocr__pb2.PingResponse.FromString,
             options, channel_credentials,
@@ -92,7 +92,7 @@ class OCR(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(request_iterator, target, '/OCR/UploadImage',
+        return grpc.experimental.stream_unary(request_iterator, target, '/ocr.OCR/UploadImage',
             ocr__pb2.UploadImageRequest.SerializeToString,
             ocr__pb2.UploadImageResponse.FromString,
             options, channel_credentials,

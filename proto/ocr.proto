@@ -1,4 +1,5 @@
 syntax = "proto3";
+package ocr;
 
 message PingResponse {
     string message = 1;
