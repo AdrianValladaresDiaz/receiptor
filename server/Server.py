@@ -3,6 +3,7 @@ import server.proto.ocr_pb2 as types
 import grpc
 import concurrent.futures
 import typing
+from io import BytesIO
 from PIL import Image
 
 
@@ -31,19 +32,18 @@ class ReceiptsServicer(pb.OCRServicer):
                 # Token not found, handle the error appropriately
                 context.abort(grpc.StatusCode.UNAUTHENTICATED, "Missing authorization token")
 
-
-            chunks = []
+            # We need to accumulate chunks in a buffer otherwise pillow cant open it
+            buffer  = BytesIO()
+            count  = 0
             for request in request_iterator:
-                print(f"chunk: {request.chunk}")
-                chunks.append(request.chunk)
+                count = count + 1
+                buffer.write(request.chunk)
             
-            # Process the complete image
-            complete_image = b''.join(chunks)
             # Do something with the complete image
-            image = Image.open(complete_image)
+            image = Image.open(buffer)
             print(f"Image is {image}")
 
-            image.save("./image")
+            image.save("./image.png")
 
             return types.UploadImageResponse(message="image processed correctly")
         except Exception as e:
