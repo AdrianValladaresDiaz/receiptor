@@ -125,7 +125,7 @@ def DONUT_TEST():
     imgpath = images.get()
     print("FILES RDY")
     with Image.open(imgpath) as img:
-        print(img.info())
+        print(img.info)
         task_prompt = "<s_cord-v2>"
         decoder_input_ids = processor.tokenizer(
             task_prompt,
@@ -150,7 +150,9 @@ def DONUT_TEST():
         imageInfo = (processor.token2json(sequence))
         print(imageInfo)
     
-
+def BLEH():
+    import providers.queue_provider as Queues
+    print(Queues.Queues)
 
 def SERVER_TEST():
     server = OCRServer.Server().start()
