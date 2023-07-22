@@ -1,11 +1,21 @@
 import server.proto.ocr_pb2_grpc as pb
 import server.proto.ocr_pb2 as types
 import grpc
-import concurrent.futures
-import typing
 from io import BytesIO
 from PIL import Image
+import typing as T
 
+def authorize_request(context: grpc.ServicerContext):
+    token = None
+    for key, value in context.invocation_metadata():
+        if key == "authorization":
+            token = value
+            break
+    
+    if token is None:
+        return False
+    
+    return True
 
 class ReceiptsServicer(pb.OCRServicer):
     def __init__(self) -> None:
@@ -15,19 +25,13 @@ class ReceiptsServicer(pb.OCRServicer):
         print("got ping!")
         return types.PingResponse(message="Pong")
     
-    def UploadImage(self, request_iterator: typing.Iterator[types.UploadImageRequest], context: grpc.ServicerContext):
+    def UploadImage(self, request_iterator: T.Iterator[types.UploadImageRequest], context: grpc.ServicerContext):
+        
         print("Received UploadImage request")
         try:
             # Validate the token from the initial request
-
-            token = None
-            for key, value in context.invocation_metadata():
-                if key == "authorization":
-                    token = value
-                    break
-
-            print(f'token: {token!r}')
-            if token is None:
+            request_is_authorized = authorize_request(context)
+            if request_is_authorized is False:
                 # Token not found, handle the error appropriately
                 context.abort(grpc.StatusCode.UNAUTHENTICATED, "Missing authorization token")
 
@@ -50,20 +54,4 @@ class ReceiptsServicer(pb.OCRServicer):
             return types.UploadImageResponse(message="Error encountered")
 
 
-
-class Server:
-    def __init__(self) -> None:
-        self.servicer = ReceiptsServicer()
-        server = grpc.server(
-            concurrent.futures.ThreadPoolExecutor(max_workers=10)
-        )
-        pb.add_OCRServicer_to_server(self.servicer,server)
-        server.add_insecure_port('[::]:50051')
-        self._server = server
-
-    def start(self)-> "Server":
-        print("starting.....")
-        self._server.start()
-        self._server.wait_for_termination()
-        return self
 

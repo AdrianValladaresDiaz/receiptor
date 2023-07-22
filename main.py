@@ -4,7 +4,7 @@ import receipt_processor.file_gatherer as RP
 from multiprocessing import Queue, Event
 import logging
 from receipt_processor.setup_loggers import setup_loggers
-import server.Server as OCRServer
+import server.server as OCRServer
 
 
 def random_generator(outQ: Queue, logger: logging.Logger):
