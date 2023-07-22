@@ -2,11 +2,14 @@ import re
 from multiprocessing import Queue, Value
 from logging import Logger
 import torch
+from typing import  Any
 
 from transformers import DonutProcessor, VisionEncoderDecoderModel
 
 
-def runDONUT(inQ: Queue, outQ: Queue, logger: Logger, process_counter: Value):
+multiprocessingValueAlias: Any
+
+def runDONUT(inQ: Queue, outQ: Queue, logger: Logger, process_counter: multiprocessingValueAlias):
     """Gets image from the input Queue and applies the DONUT
         model to it. Image is removed from memory after reading
     """

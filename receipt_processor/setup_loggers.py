@@ -13,7 +13,7 @@ def setup_loggers()->tuple[logging.Logger, QueueListener]:
     all processes. 
     """
     # Define a queue and a queue handler, that will send logs to that queue.
-    logs_queue = Queue(-1)
+    logs_queue: Queue[logging.LogRecord] = Queue(-1)
     queue_handler = QueueHandler(logs_queue)
 
     # Add handler to logger. This passes the generated logs to that queue.

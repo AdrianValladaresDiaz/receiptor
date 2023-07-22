@@ -20,14 +20,13 @@ class ReceiptsServicer(pb.OCRServicer):
         try:
             # Validate the token from the initial request
 
-
             token = None
             for key, value in context.invocation_metadata():
                 if key == "authorization":
                     token = value
                     break
 
-            print(f'token: {token}')
+            print(f'token: {token!r}')
             if token is None:
                 # Token not found, handle the error appropriately
                 context.abort(grpc.StatusCode.UNAUTHENTICATED, "Missing authorization token")
