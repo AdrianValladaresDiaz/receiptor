@@ -4,6 +4,7 @@ import grpc
 from io import BytesIO
 from PIL import Image
 import typing as T
+import loggers
 
 def authorize_request(context: grpc.ServicerContext):
     token = None
@@ -22,12 +23,12 @@ class ReceiptsServicer(pb.OCRServicer):
         super().__init__()
 
     def Ping(self, request: types.PingRequest, context: grpc.ServicerContext):
-        print("got ping!")
+        loggers.logger.info("Received 'Ping' request")
         return types.PingResponse(message="Pong")
     
     def UploadImage(self, request_iterator: T.Iterator[types.UploadImageRequest], context: grpc.ServicerContext):
         
-        print("Received UploadImage request")
+        loggers.logger.debug("Received UploadImage request")
         try:
             # Validate the token from the initial request
             request_is_authorized = authorize_request(context)
@@ -44,13 +45,13 @@ class ReceiptsServicer(pb.OCRServicer):
             
             # Do something with the complete image
             image = Image.open(buffer)
-            print(f"Image is {image}")
+            loggers.logger.debug(f"Image is {image}")
 
             image.save("./image.png")
 
             return types.UploadImageResponse(message="image processed correctly")
         except Exception as e:
-            print(e)
+            loggers.logger.error(e)
             return types.UploadImageResponse(message="Error encountered")
 
 

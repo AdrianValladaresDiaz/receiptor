@@ -5,6 +5,8 @@ from multiprocessing import Queue, Event
 import logging
 from receipt_processor.setup_loggers import setup_loggers
 import server.server as OCRServer
+import logging
+from loggers import logger, log_listener
 
 
 def random_generator(outQ: Queue, logger: logging.Logger):
@@ -69,8 +71,8 @@ def OCR_TEST():
     import time
 
     # Setup
-    [logger, listener] = setup_loggers()
-    [serverLogger, serverLoggerListener] = setup_loggers()
+    [logger, listener] = setup_loggers(log_level=logging.DEBUG)
+    # [serverLogger, serverLoggerListener] = setup_loggers()
     
     listener.start()
     try:
@@ -149,10 +151,14 @@ def DONUT_TEST():
         sequence = re.sub(r"<.*?>", "", sequence, count=1).strip()  # remove first task start token
         imageInfo = (processor.token2json(sequence))
         print(imageInfo)
-    
-def BLEH():
-    import providers.queue_provider as Queues
-    print(Queues.Queues)
+
+def MAIN():
+    # Setup
+    log_listener.start()
+    logger.info("Loggers set up")
+    server = OCRServer.Server(logger, '[::]:50051').start()
+    log_listener.stop()
+
 
 def SERVER_TEST():
     server = OCRServer.Server().start()
@@ -167,4 +173,5 @@ Fatal - Any error that is forcing a shutdown of the service or application to pr
 if __name__ == "__main__":
     # OCR_TEST()
     # SERVER_TEST()
-    DONUT_TEST()
+    # DONUT_TEST()
+    MAIN()
