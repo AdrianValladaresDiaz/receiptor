@@ -6,7 +6,7 @@ import multiprocessing as MP
 import PIL.Image as Image
 import uuid
 
-class IncomingTransaction:
+class ReceiptProcessingRequest:
     def __init__(self, image: Image.Image) -> None:
         self.id = uuid.uuid4()
         self.transaction_id = uuid.uuid4()
@@ -15,4 +15,4 @@ class IncomingTransaction:
 class _CONFIG:
     MAX_Q_SIZE = -1
 
-incoming_transaction_queue: MP.Queue[IncomingTransaction] = MP.Queue(_CONFIG.MAX_Q_SIZE)
+incoming_receipt_queue: MP.Queue = MP.Queue(_CONFIG.MAX_Q_SIZE)

@@ -5,7 +5,7 @@ from typing import ClassVar as _ClassVar, Optional as _Optional
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class PingRequest(_message.Message):
-    __slots__ = []
+    __slots__:list[str] = []
     def __init__(self) -> None: ...
 
 class PingResponse(_message.Message):

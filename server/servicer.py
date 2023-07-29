@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image
 import typing as T
 import loggers
+from queues.queue_provider import incoming_receipt_queue, ReceiptProcessingRequest
 
 def authorize_request(context: grpc.ServicerContext):
     token = None
@@ -28,7 +29,7 @@ class ReceiptsServicer(pb.OCRServicer):
     
     def UploadImage(self, request_iterator: T.Iterator[types.UploadImageRequest], context: grpc.ServicerContext):
         
-        loggers.logger.debug("Received UploadImage request")
+        loggers.logger.info("Received UploadImage request")
         try:
             # Validate the token from the initial request
             request_is_authorized = authorize_request(context)
@@ -43,13 +44,14 @@ class ReceiptsServicer(pb.OCRServicer):
                 count = count + 1
                 buffer.write(request.chunk)
             
-            # Do something with the complete image
+            # Put Image in the queue
             image = Image.open(buffer)
-            loggers.logger.debug(f"Image is {image}")
+            receipt_processing_request = ReceiptProcessingRequest(image)
+            loggers.logger.debug(f"Image info: {image.info}")
+            incoming_receipt_queue.put(receipt_processing_request)
 
-            image.save("./image.png")
-
-            return types.UploadImageResponse(message="image processed correctly")
+            return types.UploadImageResponse(message=f"Your transaction id is {receipt_processing_request.transaction_id}")
+        
         except Exception as e:
             loggers.logger.error(e)
             return types.UploadImageResponse(message="Error encountered")
