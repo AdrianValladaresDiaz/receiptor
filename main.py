@@ -1,5 +1,4 @@
 from PIL import Image
-import pytesseract
 import receipt_processor.file_gatherer as RP
 from multiprocessing import Queue, Event
 import logging
@@ -7,6 +6,10 @@ from receipt_processor.setup_loggers import setup_loggers
 import server.server as OCRServer
 import logging
 from loggers import logger, log_listener
+from receipt_processor import donut
+from queues import queue_provider as QP
+import multiprocessing
+
 
 
 def random_generator(outQ: Queue, logger: logging.Logger):
@@ -156,7 +159,18 @@ def MAIN():
     # Setup
     log_listener.start()
     logger.info("Loggers set up")
+
+    # define processes
+    process_count = multiprocessing.Value('i', 0)
+    image_donut_parsing = multiprocessing.Process(
+        target=donut.runDONUT, args=(QP.incoming_receipt_queue, QP.parsed_image_info_queue, process_count)
+    )
+    image_donut_parsing.start()
+    logger.debug("DONUT PROCESS CALLED")
     server = OCRServer.Server(logger, '[::]:50051').start()
+
+    # Server adds stuff to queue at constructor, we need to declare output queue here
+
     log_listener.stop()
 
 

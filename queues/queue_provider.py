@@ -16,3 +16,4 @@ class _CONFIG:
     MAX_Q_SIZE = -1
 
 incoming_receipt_queue: MP.Queue = MP.Queue(_CONFIG.MAX_Q_SIZE)
+parsed_image_info_queue: MP.Queue = MP.Queue(_CONFIG.MAX_Q_SIZE)
